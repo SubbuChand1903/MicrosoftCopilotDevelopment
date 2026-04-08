@@ -1,0 +1,82 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "AdaptiveOps Workflow API",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://d6d2-2601-600-a401-ab0-6159-4331-eda-3526.ngrok-free.app"
+    }
+  ],
+  "paths": {
+    "/generate-ui": {
+      "post": {
+        "operationId": "generateUI",
+        "summary": "Generate Adaptive Card UI",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateUIRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Adaptive Card response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GenerateUIResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "GenerateUIRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "User input or adaptive card submit payload as JSON string"
+          }
+        },
+        "required": ["query"]
+      },
+      "GenerateUIResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "$schema": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "body": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}
