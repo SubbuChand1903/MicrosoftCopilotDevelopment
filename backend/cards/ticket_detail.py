@@ -34,7 +34,7 @@ def ticket_detail_card(ticket_id):
                                     "width": "stretch",
                                     "verticalContentAlignment": "Center",
                                     "items": [
-                                        {"type": "TextBlock", "text": "ServiceDesk AI", "weight": "Bolder", "size": "Medium"},
+                                        {"type": "TextBlock", "text": "SwiftDesk AI", "weight": "Bolder", "size": "Medium"},
                                         {"type": "TextBlock", "text": "Enterprise Ticket Workspace", "size": "Small", "isSubtle": True, "spacing": "None"}
                                     ]
                                 }
@@ -150,7 +150,7 @@ def ticket_detail_card(ticket_id):
                             "width": "stretch",
                             "verticalContentAlignment": "Center",
                             "items": [
-                                {"type": "TextBlock", "text": "ServiceDesk AI", "weight": "Bolder", "size": "Medium", "wrap": True},
+                                {"type": "TextBlock", "text": "SwiftDesk AI", "weight": "Bolder", "size": "Medium", "wrap": True},
                                 {"type": "TextBlock", "text": "Enterprise Ticket Workspace", "size": "Small", "isSubtle": True, "spacing": "None"}
                             ]
                         }

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response
+from fastapi import APIRouter
 from models.request_models import GenerateUIRequest
 from services.workflow_engine import handle_workflow
 from cards.ticket_board import ticket_board_card
@@ -23,6 +23,22 @@ def is_duplicate(query) -> bool:
     for k in [k for k, v in _request_cache.items() if now - v > DEDUP_WINDOW]:
         del _request_cache[k]
     return False
+
+
+def empty_card():
+    return {
+        "type": "AdaptiveCard",
+        "$schema": "https://adaptivecards.io/schemas/adaptive-card.json",
+        "version": "1.5",
+        "body": [
+            {
+                "type": "TextBlock",
+                "text": " ",
+                "isVisible": False
+            }
+        ],
+        "actions": []
+    }
 
 
 def fallback_card(message: str):
@@ -75,8 +91,8 @@ def generate_ui(req: GenerateUIRequest):
 
     # --- DEDUP CHECK ---
     if is_duplicate(normalized_query):
-        print("SKIPPING DUPLICATE - returning 204")
-        return Response(status_code=204)
+        print("SKIPPING DUPLICATE - returning empty card")
+        return empty_card()
 
     try:
         card = handle_workflow(normalized_query)

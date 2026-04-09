@@ -50,7 +50,7 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                                     "items": [
                                         {
                                             "type": "TextBlock",
-                                            "text": "ServiceDesk AI",
+                                            "text": "SwiftDesk AI",
                                             "weight": "Bolder",
                                             "size": "Medium",
                                             "wrap": True
@@ -280,7 +280,7 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                             "items": [
                                 {
                                     "type": "TextBlock",
-                                    "text": "ServiceDesk AI",
+                                    "text": "SwiftDesk AI",
                                     "weight": "Bolder",
                                     "size": "Medium",
                                     "wrap": True
