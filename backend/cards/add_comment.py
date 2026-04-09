@@ -5,43 +5,89 @@ def add_comment_card(ticket_id):
         "version": "1.5",
         "body": [
             {
-                "type": "TextBlock",
-                "text": "💬 Add Comment",
-                "weight": "Bolder",
-                "size": "ExtraLarge",
-                "color": "Accent"
+                "type": "Container",
+                "style": "accent",
+                "bleed": True,
+                "items": [
+                    {
+                        "type": "ColumnSet",
+                        "columns": [
+                            {
+                                "type": "Column",
+                                "width": "auto",
+                                "verticalContentAlignment": "Center",
+                                "items": [
+                                    {
+                                        "type": "TextBlock",
+                                        "text": "💬",
+                                        "size": "Large"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "Column",
+                                "width": "stretch",
+                                "verticalContentAlignment": "Center",
+                                "items": [
+                                    {
+                                        "type": "TextBlock",
+                                        "text": "Add Comment",
+                                        "weight": "Bolder",
+                                        "size": "Medium",
+                                        "wrap": True
+                                    },
+                                    {
+                                        "type": "TextBlock",
+                                        "text": f"Ticket: {ticket_id}",
+                                        "size": "Small",
+                                        "isSubtle": True,
+                                        "spacing": "None",
+                                        "wrap": True
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
             },
             {
-                "type": "TextBlock",
-                "text": f"Ticket: {ticket_id}",
-                "isSubtle": True,
-                "spacing": "Small"
-            },
-            {"type": "Separator"},
-            {
-                "type": "TextBlock",
-                "text": "Your Name",
-                "weight": "Bolder",
-                "size": "Small",
-                "spacing": "Medium"
-            },
-            {
-                "type": "Input.Text",
-                "id": "author",
-                "placeholder": "Enter your name"
-            },
-            {
-                "type": "TextBlock",
-                "text": "Comment",
-                "weight": "Bolder",
-                "size": "Small",
-                "spacing": "Small"
-            },
-            {
-                "type": "Input.Text",
-                "id": "comment",
-                "placeholder": "Type your comment here...",
-                "isMultiline": True
+                "type": "Container",
+                "spacing": "Medium",
+                "items": [
+                    {
+                        "type": "TextBlock",
+                        "text": "COMMENT DETAILS",
+                        "size": "Small",
+                        "weight": "Bolder",
+                        "color": "Accent",
+                        "spacing": "None"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Your Name",
+                        "weight": "Bolder",
+                        "size": "Small",
+                        "spacing": "Small"
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "author",
+                        "placeholder": "Enter your name"
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": "Comment",
+                        "weight": "Bolder",
+                        "size": "Small",
+                        "spacing": "Small"
+                    },
+                    {
+                        "type": "Input.Text",
+                        "id": "comment",
+                        "placeholder": "Type your comment here...",
+                        "isMultiline": True
+                    }
+                ]
             }
         ],
         "actions": [

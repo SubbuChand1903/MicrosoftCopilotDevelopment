@@ -1,10 +1,28 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response
 from models.request_models import GenerateUIRequest
 from services.workflow_engine import handle_workflow
 from cards.ticket_board import ticket_board_card
 import json
+import time
+import hashlib
 
 router = APIRouter()
+
+# --- DEDUP CACHE ---
+_request_cache = {}
+DEDUP_WINDOW = 3  # seconds
+
+
+def is_duplicate(query) -> bool:
+    key = hashlib.md5(str(query).encode()).hexdigest()
+    now = time.time()
+    if key in _request_cache and now - _request_cache[key] < DEDUP_WINDOW:
+        print("DUPLICATE REQUEST BLOCKED:", key)
+        return True
+    _request_cache[key] = now
+    for k in [k for k, v in _request_cache.items() if now - v > DEDUP_WINDOW]:
+        del _request_cache[k]
+    return False
 
 
 def fallback_card(message: str):
@@ -45,26 +63,20 @@ def generate_ui(req: GenerateUIRequest):
         except Exception as e:
             print("JSON parse failed:", e)
 
-    # Normalize query before sending to workflow
-    normalized_query = None
-
+    # Normalize
     if isinstance(query, dict):
-        # Already structured payload
         normalized_query = query
-
     elif isinstance(query, str):
-        # Natural language / imBack text / plain text input
-        normalized_query = {
-            "text": query.strip()
-        }
-
+        normalized_query = {"text": query.strip()}
     else:
-        # Unknown format fallback
-        normalized_query = {
-            "text": str(query).strip()
-        }
+        normalized_query = {"text": str(query).strip()}
 
     print("NORMALIZED QUERY:", normalized_query)
+
+    # --- DEDUP CHECK ---
+    if is_duplicate(normalized_query):
+        print("SKIPPING DUPLICATE - returning 204")
+        return Response(status_code=204)
 
     try:
         card = handle_workflow(normalized_query)
@@ -73,7 +85,6 @@ def generate_ui(req: GenerateUIRequest):
             print("No card returned from workflow, sending fallback")
             return fallback_card("⚠️ Something went wrong")
 
-        # Safety: ensure full adaptive card is returned
         if not isinstance(card, dict):
             print("Workflow returned non-dict response, sending fallback")
             return fallback_card("⚠️ Invalid card response from backend")

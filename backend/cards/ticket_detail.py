@@ -17,40 +17,42 @@ def ticket_detail_card(ticket_id):
             "body": [
                 {
                     "type": "Container",
-                    "style": "emphasis",
+                    "style": "accent",
                     "bleed": True,
                     "items": [
                         {
-                            "type": "TextBlock",
-                            "text": "ServiceDesk AI",
-                            "weight": "Bolder",
-                            "size": "Large",
-                            "color": "Accent"
-                        },
-                        {
-                            "type": "TextBlock",
-                            "text": "Enterprise Ticket Workspace",
-                            "isSubtle": True,
-                            "size": "Small",
-                            "spacing": "None"
+                            "type": "ColumnSet",
+                            "columns": [
+                                {
+                                    "type": "Column",
+                                    "width": "auto",
+                                    "verticalContentAlignment": "Center",
+                                    "items": [{"type": "TextBlock", "text": "🎫", "size": "Large"}]
+                                },
+                                {
+                                    "type": "Column",
+                                    "width": "stretch",
+                                    "verticalContentAlignment": "Center",
+                                    "items": [
+                                        {"type": "TextBlock", "text": "ServiceDesk AI", "weight": "Bolder", "size": "Medium"},
+                                        {"type": "TextBlock", "text": "Enterprise Ticket Workspace", "size": "Small", "isSubtle": True, "spacing": "None"}
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 },
                 {
-                    "type": "TextBlock",
-                    "text": f"Ticket {ticket_id} was not found.",
-                    "weight": "Bolder",
-                    "color": "Attention",
+                    "type": "Container",
                     "spacing": "Medium",
-                    "wrap": True
+                    "items": [
+                        {"type": "TextBlock", "text": "TICKET NOT FOUND", "size": "Small", "weight": "Bolder", "color": "Attention", "spacing": "None"},
+                        {"type": "TextBlock", "text": f"Ticket {ticket_id} could not be found.", "isSubtle": True, "wrap": True, "spacing": "Small"}
+                    ]
                 }
             ],
             "actions": [
-                {
-                    "type": "Action.Submit",
-                    "title": "← Back to Board",
-                    "data": {"action": "view_board"}
-                }
+                {"type": "Action.Submit", "title": "← Back to Board", "data": {"action": "view_board"}}
             ]
         }
 
@@ -66,116 +68,124 @@ def ticket_detail_card(ticket_id):
 
     comment_items = []
     if comments:
-        comment_items.extend([
-            {"type": "Separator", "spacing": "Medium"},
-            {
-                "type": "TextBlock",
-                "text": f"Comments ({len(comments)})",
-                "weight": "Bolder",
-                "size": "Medium"
-            }
-        ])
+        comment_items.append({
+            "type": "TextBlock",
+            "text": f"COMMENTS ({len(comments)})",
+            "size": "Small",
+            "weight": "Bolder",
+            "color": "Accent",
+            "spacing": "Medium"
+        })
+        comment_items.append({"type": "Separator", "spacing": "Small"})
 
         for c in comments[-4:]:
             c_time = c.created_at.strftime("%b %d, %H:%M") if hasattr(c.created_at, "strftime") else str(c.created_at)
-            comment_items.append(
-                {
-                    "type": "Container",
-                    "style": "emphasis",
-                    "spacing": "Small",
-                    "items": [
-                        {
-                            "type": "ColumnSet",
-                            "columns": [
-                                {
-                                    "type": "Column",
-                                    "width": "stretch",
-                                    "items": [
-                                        {
-                                            "type": "TextBlock",
-                                            "text": f"👤 {c.author}",
-                                            "weight": "Bolder",
-                                            "size": "Small"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "type": "Column",
-                                    "width": "auto",
-                                    "items": [
-                                        {
-                                            "type": "TextBlock",
-                                            "text": c_time,
-                                            "isSubtle": True,
-                                            "size": "Small"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "type": "TextBlock",
-                            "text": c.text,
-                            "wrap": True,
-                            "size": "Small",
-                            "isSubtle": True,
-                            "spacing": "Small"
-                        }
-                    ]
-                }
-            )
+            comment_items.append({
+                "type": "Container",
+                "style": "emphasis",
+                "spacing": "Small",
+                "items": [
+                    {
+                        "type": "ColumnSet",
+                        "columns": [
+                            {
+                                "type": "Column",
+                                "width": "stretch",
+                                "items": [{"type": "TextBlock", "text": f"👤 {c.author}", "weight": "Bolder", "size": "Small"}]
+                            },
+                            {
+                                "type": "Column",
+                                "width": "auto",
+                                "items": [{"type": "TextBlock", "text": c_time, "isSubtle": True, "size": "Small"}]
+                            }
+                        ]
+                    },
+                    {
+                        "type": "TextBlock",
+                        "text": c.text,
+                        "wrap": True,
+                        "size": "Small",
+                        "isSubtle": True,
+                        "spacing": "Small"
+                    }
+                ]
+            })
     else:
-        comment_items.extend([
-            {"type": "Separator", "spacing": "Medium"},
-            {
-                "type": "TextBlock",
-                "text": "No comments yet.",
-                "isSubtle": True,
-                "size": "Small"
-            }
-        ])
-
-    body = [
-        {
+        comment_items.append({
+            "type": "TextBlock",
+            "text": "COMMENTS",
+            "size": "Small",
+            "weight": "Bolder",
+            "color": "Accent",
+            "spacing": "Medium"
+        })
+        comment_items.append({"type": "Separator", "spacing": "Small"})
+        comment_items.append({
             "type": "Container",
             "style": "emphasis",
+            "spacing": "Small",
+            "items": [
+                {"type": "TextBlock", "text": "💬 No comments yet.", "isSubtle": True, "size": "Small"}
+            ]
+        })
+
+    body = [
+        # --- HEADER ---
+        {
+            "type": "Container",
+            "style": "accent",
             "bleed": True,
             "items": [
                 {
-                    "type": "TextBlock",
-                    "text": "ServiceDesk AI",
-                    "weight": "Bolder",
-                    "size": "Large",
-                    "color": "Accent"
-                },
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "width": "auto",
+                            "verticalContentAlignment": "Center",
+                            "items": [{"type": "TextBlock", "text": "🎫", "size": "Large"}]
+                        },
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "verticalContentAlignment": "Center",
+                            "items": [
+                                {"type": "TextBlock", "text": "ServiceDesk AI", "weight": "Bolder", "size": "Medium", "wrap": True},
+                                {"type": "TextBlock", "text": "Enterprise Ticket Workspace", "size": "Small", "isSubtle": True, "spacing": "None"}
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        # --- NAV ACTIONS ---
+        {
+            "type": "ActionSet",
+            "spacing": "Medium",
+            "actions": [
+                {"type": "Action.Submit", "title": "← Back", "data": {"action": "view_board"}},
+                {"type": "Action.Submit", "title": "💬 Add Comment", "style": "positive", "data": {"action": "show_add_comment_form", "ticket_id": t.id}}
+            ]
+        },
+        # --- TICKET TITLE + ID ---
+        {
+            "type": "Container",
+            "spacing": "Small",
+            "items": [
                 {
                     "type": "TextBlock",
-                    "text": "Enterprise Ticket Workspace",
-                    "isSubtle": True,
+                    "text": "TICKET DETAILS",
                     "size": "Small",
+                    "weight": "Bolder",
+                    "color": "Accent",
                     "spacing": "None"
                 }
             ]
         },
         {
-            "type": "ActionSet",
-            "spacing": "Medium",
-            "actions": [
-                {
-                    "type": "Action.Submit",
-                    "title": "← Back",
-                    "data": {"action": "view_board"}
-                },
-                {
-                    "type": "Action.Submit",
-                    "title": "💬 Add Comment",
-                    "data": {"action": "show_add_comment_form", "ticket_id": t.id}
-                }
-            ]
-        },
-        {
             "type": "Container",
-            "spacing": "Medium",
+            "style": "emphasis",
+            "spacing": "Small",
             "items": [
                 {
                     "type": "ColumnSet",
@@ -184,26 +194,8 @@ def ticket_detail_card(ticket_id):
                             "type": "Column",
                             "width": "stretch",
                             "items": [
-                                {
-                                    "type": "TextBlock",
-                                    "text": t.title,
-                                    "weight": "Bolder",
-                                    "size": "Large",
-                                    "wrap": True
-                                }
-                            ]
-                        },
-                        {
-                            "type": "Column",
-                            "width": "auto",
-                            "items": [
-                                {
-                                    "type": "TextBlock",
-                                    "text": t.id,
-                                    "color": "Accent",
-                                    "weight": "Bolder",
-                                    "size": "Small"
-                                }
+                                {"type": "TextBlock", "text": t.title, "weight": "Bolder", "size": "Medium", "wrap": True},
+                                {"type": "TextBlock", "text": t.id, "color": "Accent", "weight": "Bolder", "size": "Small", "spacing": "None"}
                             ]
                         }
                     ]
@@ -215,15 +207,7 @@ def ticket_detail_card(ticket_id):
                         {
                             "type": "Column",
                             "width": "auto",
-                            "items": [
-                                {
-                                    "type": "TextBlock",
-                                    "text": f"{p_icon} {t.priority}",
-                                    "color": p_color,
-                                    "weight": "Bolder",
-                                    "size": "Small"
-                                }
-                            ]
+                            "items": [{"type": "TextBlock", "text": f"{p_icon} {t.priority}", "color": p_color, "weight": "Bolder", "size": "Small"}]
                         },
                         {
                             "type": "Column",
@@ -233,15 +217,7 @@ def ticket_detail_card(ticket_id):
                         {
                             "type": "Column",
                             "width": "auto",
-                            "items": [
-                                {
-                                    "type": "TextBlock",
-                                    "text": f"{s_icon} {t.status}",
-                                    "color": s_color,
-                                    "weight": "Bolder",
-                                    "size": "Small"
-                                }
-                            ]
+                            "items": [{"type": "TextBlock", "text": f"{s_icon} {t.status}", "color": s_color, "weight": "Bolder", "size": "Small"}]
                         },
                         {
                             "type": "Column",
@@ -251,62 +227,76 @@ def ticket_detail_card(ticket_id):
                         {
                             "type": "Column",
                             "width": "auto",
-                            "items": [
-                                {
-                                    "type": "TextBlock",
-                                    "text": f"👤 {t.assignee}",
-                                    "isSubtle": True,
-                                    "size": "Small"
-                                }
-                            ]
+                            "items": [{"type": "TextBlock", "text": f"👤 {t.assignee or 'Unassigned'}", "isSubtle": True, "size": "Small"}]
                         }
                     ]
                 }
             ]
         },
+        # --- STATUS ACTIONS ---
+        {
+            "type": "TextBlock",
+            "text": "UPDATE STATUS",
+            "size": "Small",
+            "weight": "Bolder",
+            "color": "Accent",
+            "spacing": "Medium"
+        },
         {
             "type": "ActionSet",
-            "spacing": "Medium",
+            "spacing": "Small",
             "actions": [
+                {"type": "Action.Submit", "title": "🔵 Open", "data": {"action": "update_status", "ticket_id": t.id, "status": "Open"}},
+                {"type": "Action.Submit", "title": "🟠 In Progress", "data": {"action": "update_status", "ticket_id": t.id, "status": "In Progress"}},
+                {"type": "Action.Submit", "title": "✅ Closed", "data": {"action": "update_status", "ticket_id": t.id, "status": "Closed"}}
+            ]
+        },
+        # --- META ---
+        {
+            "type": "TextBlock",
+            "text": "METADATA",
+            "size": "Small",
+            "weight": "Bolder",
+            "color": "Accent",
+            "spacing": "Medium"
+        },
+        {
+            "type": "Container",
+            "style": "emphasis",
+            "spacing": "Small",
+            "items": [
                 {
-                    "type": "Action.Submit",
-                    "title": "Open",
-                    "data": {"action": "update_status", "ticket_id": t.id, "status": "Open"}
-                },
-                {
-                    "type": "Action.Submit",
-                    "title": "In Progress",
-                    "data": {"action": "update_status", "ticket_id": t.id, "status": "In Progress"}
-                },
-                {
-                    "type": "Action.Submit",
-                    "title": "Closed",
-                    "data": {"action": "update_status", "ticket_id": t.id, "status": "Closed"}
+                    "type": "FactSet",
+                    "facts": [
+                        {"title": "Category", "value": t.category},
+                        {"title": "Created", "value": created},
+                        {"title": "Last Updated", "value": updated}
+                    ]
                 }
             ]
         },
-        {"type": "Separator", "spacing": "Medium"},
-        {
-            "type": "FactSet",
-            "facts": [
-                {"title": "Category", "value": t.category},
-                {"title": "Created", "value": created},
-                {"title": "Last Updated", "value": updated}
-            ]
-        },
-        {"type": "Separator", "spacing": "Small"},
+        # --- DESCRIPTION ---
         {
             "type": "TextBlock",
-            "text": "Description",
+            "text": "DESCRIPTION",
+            "size": "Small",
             "weight": "Bolder",
-            "size": "Medium"
+            "color": "Accent",
+            "spacing": "Medium"
         },
         {
-            "type": "TextBlock",
-            "text": t.description or "No description provided.",
-            "wrap": True,
-            "isSubtle": True,
-            "size": "Small"
+            "type": "Container",
+            "style": "emphasis",
+            "spacing": "Small",
+            "items": [
+                {
+                    "type": "TextBlock",
+                    "text": t.description or "No description provided.",
+                    "wrap": True,
+                    "isSubtle": True,
+                    "size": "Small"
+                }
+            ]
         },
         *comment_items
     ]

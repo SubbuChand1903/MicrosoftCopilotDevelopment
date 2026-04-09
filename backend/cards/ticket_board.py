@@ -2,7 +2,6 @@ from services.ticket_service import get_all_tickets
 
 PRIORITY_COLORS = {"High": "attention", "Medium": "warning", "Low": "good"}
 STATUS_COLORS = {"Open": "accent", "In Progress": "warning", "Closed": "good"}
-
 PRIORITY_ICONS = {"High": "🔴", "Medium": "🟡", "Low": "🟢"}
 STATUS_ICONS = {"Open": "🔵", "In Progress": "🟠", "Closed": "✅"}
 
@@ -32,22 +31,40 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
             "body": [
                 {
                     "type": "Container",
-                    "style": "emphasis",
+                    "style": "accent",
                     "bleed": True,
                     "items": [
                         {
-                            "type": "TextBlock",
-                            "text": "ServiceDesk AI",
-                            "weight": "Bolder",
-                            "size": "Large",
-                            "color": "Accent"
-                        },
-                        {
-                            "type": "TextBlock",
-                            "text": "Enterprise Ticket Workspace",
-                            "isSubtle": True,
-                            "size": "Small",
-                            "spacing": "None"
+                            "type": "ColumnSet",
+                            "columns": [
+                                {
+                                    "type": "Column",
+                                    "width": "auto",
+                                    "verticalContentAlignment": "Center",
+                                    "items": [{"type": "TextBlock", "text": "🎫", "size": "Large"}]
+                                },
+                                {
+                                    "type": "Column",
+                                    "width": "stretch",
+                                    "verticalContentAlignment": "Center",
+                                    "items": [
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "ServiceDesk AI",
+                                            "weight": "Bolder",
+                                            "size": "Medium",
+                                            "wrap": True
+                                        },
+                                        {
+                                            "type": "TextBlock",
+                                            "text": "Enterprise Ticket Workspace",
+                                            "size": "Small",
+                                            "isSubtle": True,
+                                            "spacing": "None"
+                                        }
+                                    ]
+                                }
+                            ]
                         }
                     ]
                 },
@@ -57,15 +74,18 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                     "items": [
                         {
                             "type": "TextBlock",
-                            "text": "No tickets found",
+                            "text": "NO TICKETS FOUND",
+                            "size": "Small",
                             "weight": "Bolder",
-                            "size": "Medium"
+                            "color": "Accent",
+                            "spacing": "None"
                         },
                         {
                             "type": "TextBlock",
                             "text": "Try another filter or create a new ticket.",
                             "isSubtle": True,
-                            "wrap": True
+                            "wrap": True,
+                            "spacing": "Small"
                         }
                     ]
                 }
@@ -74,6 +94,7 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                 {
                     "type": "Action.Submit",
                     "title": "➕ Create Ticket",
+                    "style": "positive",
                     "data": {"action": "show_create_form"}
                 },
                 {
@@ -93,13 +114,12 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                 {
                     "type": "Container",
                     "style": "emphasis",
-                    "bleed": False,
                     "items": [
                         {
                             "type": "TextBlock",
                             "text": str(value),
                             "weight": "Bolder",
-                            "size": "Medium",
+                            "size": "Large",
                             "color": color,
                             "horizontalAlignment": "Center"
                         },
@@ -122,15 +142,12 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
             "spacing": "Small",
             "actions": [
                 {
-                "type": "Action.Submit",
-                "title": "Open",
-                "data": {
-                    "action": "open_ticket",
-                    "ticket_id": ticket_id
-                }
-            },
+                    "type": "Action.Submit",
+                    "title": "Open",
+                    "data": {"action": "open_ticket", "ticket_id": ticket_id}
+                },
                 {
-                    "type": "Action.Submit",  # keep this unchanged for now
+                    "type": "Action.Submit",
                     "title": "Comment",
                     "data": {"action": "show_add_comment_form", "ticket_id": ticket_id}
                 }
@@ -140,23 +157,18 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
     def make_row(t):
         p_icon = PRIORITY_ICONS.get(t.priority, "⚪")
         p_color = PRIORITY_COLORS.get(t.priority, "default")
-
         s_icon = STATUS_ICONS.get(t.status, "❓")
         s_color = STATUS_COLORS.get(t.status, "default")
-
         created = t.created_at.strftime("%b %d") if hasattr(t.created_at, "strftime") else str(t.created_at)[:10]
 
         return {
             "type": "Container",
             "style": "emphasis",
-            "spacing": "Medium",
+            "spacing": "Small",
             "selectAction": {
-    "type": "Action.Submit",
-    "data": {
-        "action": "open_ticket",
-        "ticket_id": t.id
-    }
-},
+                "type": "Action.Submit",
+                "data": {"action": "open_ticket", "ticket_id": t.id}
+            },
             "items": [
                 {
                     "type": "ColumnSet",
@@ -169,12 +181,12 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                                     "type": "TextBlock",
                                     "text": t.title,
                                     "weight": "Bolder",
-                                    "size": "Medium",
+                                    "size": "Small",
                                     "wrap": True
                                 },
                                 {
                                     "type": "TextBlock",
-                                    "text": t.description[:110] + ("..." if t.description and len(t.description) > 110 else "")
+                                    "text": (t.description[:110] + ("..." if len(t.description) > 110 else ""))
                                     if t.description else "No description provided.",
                                     "isSubtle": True,
                                     "size": "Small",
@@ -188,15 +200,7 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                                         {
                                             "type": "Column",
                                             "width": "auto",
-                                            "items": [
-                                                {
-                                                    "type": "TextBlock",
-                                                    "text": f"{p_icon} {t.priority}",
-                                                    "color": p_color,
-                                                    "size": "Small",
-                                                    "weight": "Bolder"
-                                                }
-                                            ]
+                                            "items": [{"type": "TextBlock", "text": f"{p_icon} {t.priority}", "color": p_color, "size": "Small", "weight": "Bolder"}]
                                         },
                                         {
                                             "type": "Column",
@@ -206,15 +210,7 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                                         {
                                             "type": "Column",
                                             "width": "auto",
-                                            "items": [
-                                                {
-                                                    "type": "TextBlock",
-                                                    "text": f"{s_icon} {t.status}",
-                                                    "color": s_color,
-                                                    "size": "Small",
-                                                    "weight": "Bolder"
-                                                }
-                                            ]
+                                            "items": [{"type": "TextBlock", "text": f"{s_icon} {t.status}", "color": s_color, "size": "Small", "weight": "Bolder"}]
                                         },
                                         {
                                             "type": "Column",
@@ -224,14 +220,7 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                                         {
                                             "type": "Column",
                                             "width": "auto",
-                                            "items": [
-                                                {
-                                                    "type": "TextBlock",
-                                                    "text": f"👤 {t.assignee}",
-                                                    "isSubtle": True,
-                                                    "size": "Small"
-                                                }
-                                            ]
+                                            "items": [{"type": "TextBlock", "text": f"👤 {t.assignee or 'Unassigned'}", "isSubtle": True, "size": "Small"}]
                                         },
                                         {
                                             "type": "Column",
@@ -241,14 +230,7 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                                         {
                                             "type": "Column",
                                             "width": "auto",
-                                            "items": [
-                                                {
-                                                    "type": "TextBlock",
-                                                    "text": created,
-                                                    "isSubtle": True,
-                                                    "size": "Small"
-                                                }
-                                            ]
+                                            "items": [{"type": "TextBlock", "text": created, "isSubtle": True, "size": "Small"}]
                                         }
                                     ]
                                 }
@@ -257,6 +239,7 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                         {
                             "type": "Column",
                             "width": "auto",
+                            "verticalContentAlignment": "Top",
                             "items": [
                                 {
                                     "type": "TextBlock",
@@ -278,7 +261,7 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
     body = [
         {
             "type": "Container",
-            "style": "emphasis",
+            "style": "accent",
             "bleed": True,
             "items": [
                 {
@@ -286,20 +269,27 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                     "columns": [
                         {
                             "type": "Column",
+                            "width": "auto",
+                            "verticalContentAlignment": "Center",
+                            "items": [{"type": "TextBlock", "text": "🎫", "size": "Large"}]
+                        },
+                        {
+                            "type": "Column",
                             "width": "stretch",
+                            "verticalContentAlignment": "Center",
                             "items": [
                                 {
                                     "type": "TextBlock",
                                     "text": "ServiceDesk AI",
                                     "weight": "Bolder",
-                                    "size": "Large",
-                                    "color": "Accent"
+                                    "size": "Medium",
+                                    "wrap": True
                                 },
                                 {
                                     "type": "TextBlock",
                                     "text": "Enterprise Ticket Workspace",
-                                    "isSubtle": True,
                                     "size": "Small",
+                                    "isSubtle": True,
                                     "spacing": "None"
                                 }
                             ]
@@ -313,7 +303,8 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                                     "type": "TextBlock",
                                     "text": f"{len(tickets)} shown / {total} total",
                                     "size": "Small",
-                                    "isSubtle": True
+                                    "isSubtle": True,
+                                    "horizontalAlignment": "Right"
                                 }
                             ]
                         }
@@ -328,6 +319,7 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
                 {
                     "type": "Action.Submit",
                     "title": "➕ Create Ticket",
+                    "style": "positive",
                     "data": {"action": "show_create_form"}
                 },
                 {
@@ -343,15 +335,31 @@ def ticket_board_card(filter_status=None, filter_priority=None, filter_assignee=
             ]
         },
         {
+            "type": "TextBlock",
+            "text": "TICKET OVERVIEW",
+            "size": "Small",
+            "weight": "Bolder",
+            "color": "Accent",
+            "spacing": "Medium"
+        },
+        {
             "type": "ColumnSet",
-            "spacing": "Medium",
+            "spacing": "Small",
             "columns": [
                 stat_chip("Open", open_count, "Accent"),
                 stat_chip("In Progress", inprogress_count, "Warning"),
                 stat_chip("Closed", closed_count, "Good"),
             ]
         },
-        {"type": "Separator", "spacing": "Medium"}
+        {
+            "type": "TextBlock",
+            "text": "ALL TICKETS",
+            "size": "Small",
+            "weight": "Bolder",
+            "color": "Accent",
+            "spacing": "Medium"
+        },
+        {"type": "Separator", "spacing": "Small"}
     ]
 
     for t in tickets[:8]:
